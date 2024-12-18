@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
+#include <ctime>
 #include "GameBoard.h"
 
 int main(int argc, char* argv[]){
+    // Obrada argumenata komandne linije
     int dim_1, dim_2, item_count;
     try{
         dim_1 = std::stoi(argv[1]);
@@ -17,15 +19,18 @@ int main(int argc, char* argv[]){
         return -1;
     }
     std::cout << "Dobrodosli u L A V I R I N T\n";
+    // Generisanje table
     GameBoard g(dim_1, dim_2, item_count);
-    g.initialize();
-    while(true){
+    int start = std::time(0);
+    g.generate_outer_walls();
+    g.generate_inner_walls();
+    double passtime = std::difftime(std::time(0), start);
+    std::cout << passtime << '\n';
+    // Gameplay petlja
+    while(!g.game_end()){
         std::cout << g;
         g.player_move();
         g.enemy_move();
-        if(g.game_end()){
-            break;
-        }
     }
     return 0;
 }

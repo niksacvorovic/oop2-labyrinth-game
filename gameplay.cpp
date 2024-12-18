@@ -1,51 +1,9 @@
 #include "GameBoard.h"
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 
 // Mehanizmi za funkcionisanje igrice
 
-// Algoritam za generisanje lavirinta
-void GameBoard::initialize(){
-    char** newboard = new char* [height];
-    for(int i = 0; i < height; ++i){
-        newboard[i] = new char[width];
-    }
-    std::time_t seed = std::time(0);
-    std::srand(seed);
-    player_y = 1;
-    player_x = (std::rand() % (width - 2)) + 1;
-    enemy_y = height - 2;
-    enemy_x = (std::rand() % (width - 2)) + 1;
-    for(int i = 0; i < width; ++i){
-        if (i == player_x){
-            newboard[0][i] = 'U';
-        }else{
-            newboard[0][i] = '#';
-        }
-        if (i == enemy_x){
-            newboard[width - 1][i] = 'I';
-        }else{
-            newboard[width - 1][i] = '#';
-        }
-    }
-    for(int i = 1; i < height - 1; ++i){
-        for(int j = 0; j < width; ++j){
-            if(j == 0 || j == width - 1){
-                newboard[i][j] = '#';
-            }else{
-                newboard[i][j] = ' ';
-            }
-        }
-    }
-    newboard[player_y][player_x] = 'R';
-    newboard[enemy_y][enemy_x] = 'M';
-    board = newboard;
-    double passtime = std::difftime(std::time(0), seed);
-    std::cout << passtime << '\n';
-}
-
-// Funkcije za kretanje igrača
+// Funkcija za kretanje igrača
 void GameBoard::player_move(){
     char step;
     bool moves(true);
@@ -81,7 +39,7 @@ void GameBoard::player_move(){
             player_x = new_x;
             moves = false;
         }else{
-            std::cout << "Ne možete odigrati ovaj potez";
+            std::cout << "Ne mozete odigrati ovaj potez\n";
             new_x = player_x;
             new_y = player_y;
         }
@@ -123,6 +81,9 @@ void GameBoard::enemy_move(){
             enemy_y = new_y;
             board[enemy_y][enemy_x] = 'M';
             break;
+        }else{
+            new_x = enemy_x;
+            new_y = enemy_y;
         }
     }
 }
