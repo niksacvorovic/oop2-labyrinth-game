@@ -1,6 +1,6 @@
-#include "GameBoard.h"
+#include "GameBoard.hpp"
 #include <cstdlib>
-#include <ctime>
+#include <chrono>
 #include <set>
 
 // Generisanje ulaza, izlaza i spoljašnjih zidova
@@ -41,7 +41,7 @@ void GameBoard::generate_inner_walls(){
     std::srand(seed);
     int wall_count(0);
     int rand_x, rand_y;
-    while(wall_count < 2 * (width + height)){
+    while(wall_count < 4 * (width + height)){
         rand_x = std::rand() % (width - 2) + 1;
         rand_y = std::rand() % (height - 2) + 1;
         if(board[rand_y][rand_x] == ' ') board[rand_y][rand_x] = '#';
@@ -51,12 +51,35 @@ void GameBoard::generate_inner_walls(){
 
 bool GameBoard::check_board(){
     std::set<std::pair<int, int>> visited;
-    return path_check(&visited, std::pair<int, int>(player_x, player_y));
+    return path_check(&visited, std::pair<int, int>(player_y, player_x));
 }
 
-bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int> current){
+bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int> current){
     if(visited->find(current) != visited->end()){
-        return true;
+        return false;
+    } else {
+        visited->insert(current);
     }
-    return false;
+    if(current.first == enemy_y && current.second == enemy_x){
+        return true;
+    } else if (board[current.first][current.second] == '#' || board[current.first][current.second] == 'U'){
+        return false;
+    } else {
+        std::pair<int, int> left(current.first, current.second - 1);
+        std::pair<int, int> down(current.first + 1, current.second);
+        std::pair<int, int> right(current.first, current.second + 1);
+        std::pair<int, int> up(current.first - 1, current.second);
+        return path_check(visited, left) || path_check(visited, down) || path_check(visited, right) || path_check(visited, up);
+    }
+}
+
+void GameBoard::generate(){
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    do{
+        this->generate_outer_walls();
+        this->generate_inner_walls();
+    }while(!this->check_board());
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Vreme za generisanje table (u mikrosekundama) " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
+
 }

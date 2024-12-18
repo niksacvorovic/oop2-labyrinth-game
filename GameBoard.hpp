@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <set>
 
 class GameBoard{
     int width, height, item_count;
@@ -14,6 +15,8 @@ class GameBoard{
     void generate_outer_walls();
     void generate_inner_walls();
     bool check_board();
+    bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int> current);
+    void generate();
     void player_move();
     void enemy_move();
     bool game_end();

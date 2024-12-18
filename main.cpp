@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
-#include <ctime>
-#include "GameBoard.h"
+#include "GameBoard.hpp"
 
 int main(int argc, char* argv[]){
     // Obrada argumenata komandne linije
@@ -21,11 +20,7 @@ int main(int argc, char* argv[]){
     std::cout << "Dobrodosli u L A V I R I N T\n";
     // Generisanje table
     GameBoard g(dim_1, dim_2, item_count);
-    int start = std::time(0);
-    g.generate_outer_walls();
-    g.generate_inner_walls();
-    double passtime = std::difftime(std::time(0), start);
-    std::cout << passtime << '\n';
+    g.generate();
     // Gameplay petlja
     while(!g.game_end()){
         std::cout << g;

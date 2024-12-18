@@ -1,4 +1,4 @@
-#include "GameBoard.h"
+#include "GameBoard.hpp"
 #include <iostream>
 
 // Mehanizmi za funkcionisanje igrice
