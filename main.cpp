@@ -25,6 +25,7 @@ int main(int argc, char* argv[]){
     while(!g.game_end()){
         std::cout << g;
         g.player_move();
+        if(g.game_end()) break;
         g.enemy_move();
     }
     return 0;

@@ -1,5 +1,11 @@
 #include "GameBoard.hpp"
 #include <iostream>
+#include <memory>
+#include "PowerUp.hpp"
+#include "Mist.hpp"
+#include "Shield.hpp"
+#include "Sword.hpp"
+#include "Hammer.hpp"
 
 // Mehanizmi za funkcionisanje igrice
 
@@ -32,12 +38,15 @@ void GameBoard::player_move(){
             std::cout << "Neispravan simbol. Pokusajte ponovo\n";
             break;
         }
-        if(new_x >= 0 && new_x <= width - 1 && new_y >= 0 && new_y <= height - 1 && board[new_y][new_x] != '#'){
+        this->activate_powerups();
+        if(board[new_y][new_x] != '#' && board[new_y][new_x] != 'U'){
+            if(board[new_y][new_x] == 'P') this->acquire_powerup();
             board[player_y][player_x] = ' ';
             board[new_y][new_x] = 'R';
             player_y = new_y;
             player_x = new_x;
             moves = false;
+            if(player_x == enemy_x && player_y == enemy_y) board[new_y][new_x] = 'M';
         }else{
             std::cout << "Ne mozete odigrati ovaj potez\n";
             new_x = player_x;
@@ -102,3 +111,44 @@ bool GameBoard::game_end(){
     }
     return false;
 }
+
+void GameBoard::acquire_powerup(){
+    int seed = std::rand() % 4;
+    PowerUp* ptr;
+    switch(seed){
+        case 0:
+        ptr = new Mist();
+        break;
+        case 1:
+        ptr = new Hammer();
+        break;
+        case 2:
+        ptr = new Shield();
+        break;
+        case 3:
+        ptr = new Sword();
+        break;
+    }
+    powerups.push_back(ptr);
+}
+
+// void GameBoard::acquire_powerup(){
+//     int seed = std::rand() % 4;
+//     std::unique_ptr<PowerUp> ptr;
+//     switch(seed){
+//         case 0:
+//         ptr = std::unique_ptr<Mist>(new Mist());
+//         break;
+//         case 1:
+//         ptr = std::unique_ptr<Hammer>(new Hammer());
+//         break;
+//         case 2:
+//         ptr = std::unique_ptr<Shield>(new Shield());
+//         break;
+//         case 3:
+//         ptr = std::unique_ptr<Sword>(new Sword());
+//         break;
+//     }
+//     // koristimo emplace_back zato što ne dodajemo kopiju u vektor, već pomeramo postojeći objekat
+//     powerups.emplace_back(ptr);
+// }

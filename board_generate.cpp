@@ -40,8 +40,9 @@ void GameBoard::generate_inner_walls(){
     int seed = std::time(0);
     std::srand(seed);
     int wall_count(0);
+    int max_wall_count = 0.3 * width * height;
     int rand_x, rand_y;
-    while(wall_count < 4 * (width + height)){
+    while(wall_count < max_wall_count){
         rand_x = std::rand() % (width - 2) + 1;
         rand_y = std::rand() % (height - 2) + 1;
         if(board[rand_y][rand_x] == ' ') board[rand_y][rand_x] = '#';
@@ -73,13 +74,27 @@ bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int
     }
 }
 
+void GameBoard::set_items(){
+    int items(0);
+    int item_x, item_y;
+    while(items < item_count){
+        item_x = std::rand() % (width - 2) + 1;
+        item_y = std::rand() % (height - 2) + 1;
+        if(board[item_y][item_x] == ' '){
+            board[item_y][item_x] = 'P';
+            ++items;
+        }
+    }
+}
+
 void GameBoard::generate(){
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     do{
+        std::cout << '.';
         this->generate_outer_walls();
         this->generate_inner_walls();
     }while(!this->check_board());
+    this->set_items();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "Vreme za generisanje table (u mikrosekundama) " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
-
 }
