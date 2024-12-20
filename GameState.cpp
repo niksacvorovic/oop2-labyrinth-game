@@ -1,16 +1,10 @@
-#include "GameBoard.hpp"
+#include "GameState.hpp"
 #include <iostream>
 #include <memory>
-#include "PowerUp.hpp"
-#include "Mist.hpp"
-#include "Shield.hpp"
-#include "Sword.hpp"
-#include "Hammer.hpp"
-
-// Mehanizmi za funkcionisanje igrice
+#include "PowerUps.hpp"
 
 // Funkcija za kretanje igrača
-void GameBoard::player_move(){
+void GameState::player_move(){
     char step;
     bool moves(true);
     int new_x(player_x), new_y(player_y);
@@ -38,9 +32,9 @@ void GameBoard::player_move(){
             std::cout << "Neispravan simbol. Pokusajte ponovo\n";
             break;
         }
-        this->activate_powerups();
+        // this->activate_powerups();
         if(board[new_y][new_x] != '#' && board[new_y][new_x] != 'U'){
-            if(board[new_y][new_x] == 'P') this->acquire_powerup();
+            // if(board[new_y][new_x] == 'P') this->acquire_powerup();
             board[player_y][player_x] = ' ';
             board[new_y][new_x] = 'R';
             player_y = new_y;
@@ -56,7 +50,7 @@ void GameBoard::player_move(){
 }
 
 // Funkcija za kretanje protivnika
-void GameBoard::enemy_move(){
+void GameState::enemy_move(){
     int random;
     int new_x(enemy_x), new_y(enemy_y);
     if(enemy_x == player_x && abs(enemy_y - player_y) == 1){
@@ -98,34 +92,50 @@ void GameBoard::enemy_move(){
 }
 
 // Funkcija za proveru da li je igri došao kraj
-bool GameBoard::game_end(){
+bool GameState::game_end(){
     if(board[player_y + 1][player_x] == 'I'){
-        std::cout << *this;
+        std::cout << board;
         std::cout << "Izasli ste iz L A V I R I N T A\n";
         return true;
     }
     if(player_x == enemy_x && player_y == enemy_y){
-        std::cout << *this;
+        std::cout << board;
         std::cout << "Minotaur vas je dokrajcio u L A V I R I N T U\n";
         return true;
     }
     return false;
 }
 
-void GameBoard::acquire_powerup(){
+const GameBoard& GameState::get_board(){
+    return board;
+}
+
+/*void GameBoard::acquire_powerup(){
     int seed = std::rand() % 4;
+    std::vector<std::string> names = {"Magla rata", "Cekic", "Stit", "Mac"};
+    for(auto it = powerups.begin(); it != powerups.end(); it++){
+        if((**it).type == seed){
+            (**it).duration += 3;
+            std::cout << "Dobijate jos tri poteza sledeceg efekta " << names[seed] << '\n';
+            return;
+        }
+    }
     PowerUp* ptr;
     switch(seed){
         case 0:
         ptr = new Mist();
+        std::cout << names[seed] << " - sledeca tri poteza vidite samo jedno polje oko sebe\n";
         break;
         case 1:
         ptr = new Hammer();
+        std::cout << names[seed] << " - sledeca tri poteza mozete da probijate zidove\n";
         break;
         case 2:
+        std::cout << names[seed] << " - sledeća tri poteza se mozete odbraniti od Minotaura\n";
         ptr = new Shield();
         break;
         case 3:
+        std::cout << names[seed] << " - sledeća tri poteza mozete dokrajciti Minotaura!\n";
         ptr = new Sword();
         break;
     }
@@ -152,3 +162,19 @@ void GameBoard::acquire_powerup(){
 //     // koristimo emplace_back zato što ne dodajemo kopiju u vektor, već pomeramo postojeći objekat
 //     powerups.emplace_back(ptr);
 // }
+
+void GameBoard::activate_powerups(){
+    auto it = powerups.begin();
+    while(it != powerups.end()){
+        // prvom zvedzicom derefrenciramo iterator a drugom pokazivač
+        //(**it).activate(*this);
+        --(**it).duration;
+        if((**it).duration == 0){
+            std::cout << "Isteklo\n";
+            delete *it;
+            it = powerups.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}*/

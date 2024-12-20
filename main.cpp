@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "GameBoard.hpp"
+#include "GameState.hpp"
 
 int main(int argc, char* argv[]){
     // Obrada argumenata komandne linije
@@ -19,11 +19,10 @@ int main(int argc, char* argv[]){
     }
     std::cout << "Dobrodosli u L A V I R I N T\n";
     // Generisanje table
-    GameBoard g(dim_1, dim_2, item_count);
-    g.generate();
+    GameState g(dim_1, dim_2, item_count);
     // Gameplay petlja
     while(!g.game_end()){
-        std::cout << g;
+        std::cout << g.get_board();
         g.player_move();
         if(g.game_end()) break;
         g.enemy_move();

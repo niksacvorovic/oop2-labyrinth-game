@@ -2,29 +2,21 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include "PowerUp.hpp"
 
 class GameBoard{
     int width, height, item_count;
-    char** board;
-    int player_x, player_y;
-    int enemy_x, enemy_y;
-    std::vector<PowerUp*> powerups;
+    char** matrix;
     public:
-    GameBoard(int dim_1, int dim_2, int count) : width(dim_1), height(dim_2), item_count(count), board(new char* [height]){
-        for(int i = 0; i < height; ++i) board[i] = new char[width];
+    inline GameBoard(int x, int y, int count) : width(x), height(y), item_count(count), matrix(new char* [height]){
+        for(int i = 0; i < height; ++i) matrix[i] = new char[width];
     }
     ~GameBoard();
-    void generate_outer_walls();
+    void generate_outer_walls(int player_x, int player_y, int enemy_x, int enemy_y);
     void generate_inner_walls();
-    bool check_board();
+    bool check_board(int player_x, int player_y, int enemy_x, int enemy_y);
     void set_items();
-    bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int> current);
-    void generate();
-    void player_move();
-    void acquire_powerup();
-    void activate_powerups();
-    void enemy_move();
-    bool game_end();
+    bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int>& current, std::pair<int, int>& final);
+    void generate(int player_x, int player_y, int enemy_x, int enemy_y);
+    char* operator[](int index);
     friend std::ostream& operator<<(std::ostream& os, const GameBoard& g);
 };
