@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
     GameState g(dim_1, dim_2, item_count);
     // Gameplay petlja
     while(!g.game_end()){
-        std::cout << g.get_board();
+        g.print_board();
         g.player_move();
         if(g.game_end()) break;
         g.enemy_move();

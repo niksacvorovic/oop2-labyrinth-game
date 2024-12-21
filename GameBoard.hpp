@@ -17,6 +17,8 @@ class GameBoard{
     void set_items();
     bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int>& current, std::pair<int, int>& final);
     void generate(int player_x, int player_y, int enemy_x, int enemy_y);
+    int get_width();
+    int get_height();
     char* operator[](int index);
     friend std::ostream& operator<<(std::ostream& os, const GameBoard& g);
 };

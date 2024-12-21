@@ -3,6 +3,10 @@
 #include <memory>
 #include "PowerUps.hpp"
 
+GameState::~GameState(){
+    for(PowerUp* powerup : powerups) delete powerup;
+}
+
 // Funkcija za kretanje igrača
 void GameState::player_move(){
     char step;
@@ -28,19 +32,29 @@ void GameState::player_move(){
             case 'd':
             ++new_x;
             break;
+            case 'Q':
+            case 'q':
+            exit(0);
             default:
             std::cout << "Neispravan simbol. Pokusajte ponovo\n";
             break;
         }
-        // this->activate_powerups();
-        if(board[new_y][new_x] != '#' && board[new_y][new_x] != 'U'){
-            // if(board[new_y][new_x] == 'P') this->acquire_powerup();
+        if((activate_powerup(1, new_x, new_y) || board[new_y][new_x] != '#') && board[new_y][new_x] != 'U'){
+            decay_powerups();
+            if(board[new_y][new_x] == 'P') acquire_powerup();
             board[player_y][player_x] = ' ';
             board[new_y][new_x] = 'R';
             player_y = new_y;
             player_x = new_x;
             moves = false;
-            if(player_x == enemy_x && player_y == enemy_y) board[new_y][new_x] = 'M';
+            // Predmete pozivamo jednom po potezu - zato ovom konstrukcijom pozivamo mač
+            bool kill_minotaur = activate_powerup(3, player_x, player_y);
+            if(player_x == enemy_x && player_y == enemy_y){
+                if(kill_minotaur){
+                    enemy_x = 0;
+                    enemy_y = 0;
+                }else board[player_y][player_x] = 'M';
+            }
         }else{
             std::cout << "Ne mozete odigrati ovaj potez\n";
             new_x = player_x;
@@ -53,11 +67,15 @@ void GameState::player_move(){
 void GameState::enemy_move(){
     int random;
     int new_x(enemy_x), new_y(enemy_y);
-    if(enemy_x == player_x && abs(enemy_y - player_y) == 1){
+    // Minotaur se neće kretati ako je dokrajčen
+    if(enemy_x == 0 && enemy_y == 0){
+        return;
+    }
+    if(enemy_x == player_x && abs(enemy_y - player_y) == 1 && !activate_powerup(2, 0, 0)){
         enemy_y = player_y;
         return;
     } 
-    if(enemy_y == player_y && abs(enemy_x - player_x) == 1){
+    if(enemy_y == player_y && abs(enemy_x - player_x) == 1 && !activate_powerup(2, 0, 0)){
         enemy_x = player_x;
         return;
     } 
@@ -106,40 +124,36 @@ bool GameState::game_end(){
     return false;
 }
 
-const GameBoard& GameState::get_board(){
-    return board;
+void GameState::print_board(){
+    if(!activate_powerup(0, player_x, player_y)) std::cout << board;
 }
 
-/*void GameBoard::acquire_powerup(){
+void GameState::acquire_powerup(){
     int seed = std::rand() % 4;
     std::vector<std::string> names = {"Magla rata", "Cekic", "Stit", "Mac"};
-    for(auto it = powerups.begin(); it != powerups.end(); it++){
-        if((**it).type == seed){
-            (**it).duration += 3;
-            std::cout << "Dobijate jos tri poteza sledeceg efekta " << names[seed] << '\n';
-            return;
-        }
-    }
-    PowerUp* ptr;
-    switch(seed){
+    if(powerups[seed] != nullptr) {
+        (*(powerups[seed])).duration += 3;
+        std::cout << "Dobijate jos tri poteza sledeceg efekta: " << names[seed] << '\n';
+    } else {
+        switch(seed){
         case 0:
-        ptr = new Mist();
+        powerups[0] = new Mist();
         std::cout << names[seed] << " - sledeca tri poteza vidite samo jedno polje oko sebe\n";
         break;
         case 1:
-        ptr = new Hammer();
+        powerups[1] = new Hammer();
         std::cout << names[seed] << " - sledeca tri poteza mozete da probijate zidove\n";
         break;
         case 2:
-        std::cout << names[seed] << " - sledeća tri poteza se mozete odbraniti od Minotaura\n";
-        ptr = new Shield();
+        powerups[2] = new Shield();
+        std::cout << names[seed] << " - sledeca tri poteza se mozete odbraniti od Minotaura\n";
         break;
         case 3:
-        std::cout << names[seed] << " - sledeća tri poteza mozete dokrajciti Minotaura!\n";
-        ptr = new Sword();
+        powerups[3] = new Sword();
+        std::cout << names[seed] << " - sledeca tri poteza mozete dokrajciti Minotaura!\n";
         break;
+        }
     }
-    powerups.push_back(ptr);
 }
 
 // void GameBoard::acquire_powerup(){
@@ -163,18 +177,19 @@ const GameBoard& GameState::get_board(){
 //     powerups.emplace_back(ptr);
 // }
 
-void GameBoard::activate_powerups(){
-    auto it = powerups.begin();
-    while(it != powerups.end()){
-        // prvom zvedzicom derefrenciramo iterator a drugom pokazivač
-        //(**it).activate(*this);
-        --(**it).duration;
-        if((**it).duration == 0){
-            std::cout << "Isteklo\n";
-            delete *it;
-            it = powerups.erase(it);
-        } else {
-            ++it;
+bool GameState::activate_powerup(int index, int x, int y){
+    bool activated(false);
+    if (powerups[index] != nullptr){
+        activated = powerups[index]->activate(board, x, y);
+    }
+    return activated;
+}
+
+void GameState::decay_powerups(){
+    for(auto& powerup : powerups){
+        if(powerup != nullptr){
+            --powerup->duration;
+            if(powerup->duration == 0) powerup = nullptr;
         }
     }
-}*/
+}

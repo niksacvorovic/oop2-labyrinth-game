@@ -3,37 +3,37 @@
 
 class PowerUp{
     public:
-    int duration, type;
-    PowerUp(int t) : duration(3), type(t){};
+    int duration;
+    PowerUp() : duration(3){};
     virtual ~PowerUp() {};
-    virtual void activate(GameBoard& gb)=0;
+    virtual bool activate(GameBoard& gb, int x, int y)=0;
 };
 
 class Mist : public PowerUp{
     public:
-    Mist() : PowerUp(0){};
+    Mist() : PowerUp(){};
     ~Mist() {};
-    void activate(GameBoard& gb) override;
+    bool activate(GameBoard& gb, int x, int y) override;
 };
 
 class Hammer : public PowerUp{
     public:
-    Hammer() : PowerUp(1){};
+    Hammer() : PowerUp(){};
     ~Hammer() {};
-    void activate(GameBoard& gb) override;
+    bool activate(GameBoard& gb, int x, int y) override;
 };
 
 class Shield : public PowerUp{
     public:
-    Shield() : PowerUp(2){};
+    Shield() : PowerUp(){};
     ~Shield() override {};
-    virtual void activate(GameBoard& gb) override;
+    bool activate(GameBoard& gb, int x, int y) override;
 };
 
 class Sword : public PowerUp{
     public:
-    Sword() : PowerUp(3){};
+    Sword() : PowerUp(){};
     ~Sword() {};
-    virtual void activate(GameBoard& gb) override;
+    bool activate(GameBoard& gb, int x, int y) override;
 };
 
