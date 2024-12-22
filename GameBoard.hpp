@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 
+// Klasa koja modeluje tablu - osim table, sadrži podatke o dimenzijama table i broju predmeta
 class GameBoard{
     int width, height, item_count;
     char** matrix;

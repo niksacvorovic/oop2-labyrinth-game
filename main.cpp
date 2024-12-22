@@ -21,11 +21,13 @@ int main(int argc, char* argv[]){
     // Generisanje table
     GameState g(dim_1, dim_2, item_count);
     // Gameplay petlja
-    while(!g.game_end()){
+    do{
         g.print_board();
         g.player_move();
         if(g.game_end()) break;
         g.enemy_move();
-    }
+    }while(!g.game_end());
+    // Ispis u fajl
+    g.output_board();
     return 0;
 }

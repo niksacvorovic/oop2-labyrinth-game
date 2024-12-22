@@ -56,7 +56,7 @@ void GameBoard::generate_inner_walls(){
     }
 }
 
-// Funkcija koja proverava da li je lavirint rešiv
+// Funkcija koja proverava da li je lavirint rešiv - po principu pretrage po dubini
 bool GameBoard::check_board(int player_x, int player_y, int enemy_x, int enemy_y){
     std::set<std::pair<int, int>> visited;
     std::pair<int, int> starting(player_y, player_x);
@@ -84,6 +84,7 @@ bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int
     }
 }
 
+// Funkcija koja nasumično raspoređuje predmete po tabli
 void GameBoard::set_items(){
     int items(0);
     int item_x, item_y;
@@ -97,14 +98,15 @@ void GameBoard::set_items(){
     }
 }
 
+// Obuhvata sve funkcije za generisanje table u jedan poziv
 void GameBoard::generate(int player_x, int player_y, int enemy_x, int enemy_y){
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     do{
         std::cout << '.';
-        this->generate_outer_walls(player_x, player_y, enemy_x, enemy_y);
-        this->generate_inner_walls();
-    }while(!this->check_board(player_x, player_y, enemy_x, enemy_y));
-    this->set_items();
+        generate_outer_walls(player_x, player_y, enemy_x, enemy_y);
+        generate_inner_walls();
+    }while(!check_board(player_x, player_y, enemy_x, enemy_y));
+    set_items();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "Vreme za generisanje table (u mikrosekundama) " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
 }
