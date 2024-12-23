@@ -44,8 +44,6 @@ void GameBoard::generate_outer_walls(int player_x, int player_y, int enemy_x, in
 
 // Generisanje unutrašnjih zidova - vrši se nasumično
 void GameBoard::generate_inner_walls(){
-    int seed = std::time(0);
-    std::srand(seed);
     int wall_count(0);
     // Heuristika za broj zidova
     int max_wall_count = 0.3 * width * height;

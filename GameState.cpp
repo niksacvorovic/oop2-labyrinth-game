@@ -75,11 +75,15 @@ void GameState::enemy_move(){
     }
     bool shield = activate_powerup(2, 0, 0);
     if(!shield && enemy_x == player_x && abs(enemy_y - player_y) == 1){
+        board[enemy_y][enemy_x] = ' ';
         enemy_y = player_y;
+        board[enemy_y][enemy_x] = 'M';
         return;
     } 
     if(!shield && enemy_y == player_y && abs(enemy_x - player_x) == 1){
-        enemy_x = player_x;
+        board[enemy_y][enemy_x] = ' ';
+        enemy_y = player_y;
+        board[enemy_y][enemy_x] = 'M';
         return;
     } 
     

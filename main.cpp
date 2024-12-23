@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <chrono>
 #include "GameState.hpp"
 
 /*  Projekat iz predmeta Objektno orijentisano programiranje 2 - lavirint igra 
@@ -29,6 +31,8 @@ int main(int argc, char* argv[]){
     }
     std::cout << "Dobrodosli u L A V I R I N T\n";
     // Generisanje table
+    int seed = std::time(0);
+    std::srand(seed);
     GameState g(dim_1, dim_2, item_count);
     // Gameplay petlja
     do{
