@@ -4,6 +4,8 @@
 #include <chrono>
 #include <set>
 
+// Implementacija svih funkcionalnosti vezanih za generisanje table i proveru njene ispravnosti
+
 GameBoard::~GameBoard(){
     for(int i = 0; i < height; ++i){
         delete[] matrix[i];
@@ -22,9 +24,9 @@ void GameBoard::generate_outer_walls(int player_x, int player_y, int enemy_x, in
             matrix[0][i] = '#';
         }
         if (i == enemy_x){
-            matrix[width - 1][i] = 'I';
+            matrix[height - 1][i] = 'I';
         }else{
-            matrix[width - 1][i] = '#';
+            matrix[height - 1][i] = '#';
         }
     }
     for(int i = 1; i < height - 1; ++i){
@@ -66,6 +68,7 @@ bool GameBoard::check_board(int player_x, int player_y, int enemy_x, int enemy_y
 
 // Pomoćna funkcija za check_board koja se rekurzivno poziva
 bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int>& current, std::pair<int, int>& final){
+    // Ukoliko find funkcija ne nađe element - vraća end iterator
     if(visited->find(current) != visited->end()){
         return false;
     } else {
@@ -88,7 +91,8 @@ bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int
 void GameBoard::set_items(){
     int items(0);
     int item_x, item_y;
-    while(items < item_count){
+    // Ograničavamo broj predmeta na maksimalno 60% polja
+    while(items < item_count && items < 0.6 * width * height){
         item_x = std::rand() % (width - 2) + 1;
         item_y = std::rand() % (height - 2) + 1;
         if(matrix[item_y][item_x] == ' '){
@@ -102,7 +106,6 @@ void GameBoard::set_items(){
 void GameBoard::generate(int player_x, int player_y, int enemy_x, int enemy_y){
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     do{
-        std::cout << '.';
         generate_outer_walls(player_x, player_y, enemy_x, enemy_y);
         generate_inner_walls();
     }while(!check_board(player_x, player_y, enemy_x, enemy_y));

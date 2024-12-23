@@ -2,6 +2,8 @@
 #include "PowerUps.hpp"
 #include "GameBoard.hpp"
 
+// Implementacije specijalnih efekata svih predmeta
+
 bool Mist::activate(GameBoard& gb, int x, int y){
     for(int j = 0; j < gb.get_height(); ++j){
         for(int i = 0; i < gb.get_width(); ++i){
@@ -24,7 +26,11 @@ bool Hammer::activate(GameBoard& gb, int x, int y){
 }
 
 bool Shield::activate(GameBoard& gb, int x, int y){
-    std::cout << "Stit vam traje jos " << duration - 1 << " poteza\n";
+    if(duration == 1){
+        std::cout << "Stit je istekao!\n";
+    } else {
+        std::cout << "Stit vam traje jos " << duration - 1 << " poteza\n";
+    }
     return true;
 }
 

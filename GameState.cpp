@@ -4,6 +4,8 @@
 #include <memory>
 #include "PowerUps.hpp"
 
+// Implementacija svih funkcionalnosti vezanih za tok igre i specijalne efekte
+
 // Funkcija za kretanje igrača
 void GameState::player_move(){
     char step;
@@ -37,7 +39,9 @@ void GameState::player_move(){
             std::cout << "Neispravan simbol. Pokusajte ponovo\n";
             break;
         }
-        if((activate_powerup(1, new_x, new_y) || board[new_y][new_x] != '#') && board[new_y][new_x] != 'U'){
+        // Aktivacija čekića - test da li je zid spoljašnji se sprovodi pre aktivacije kroz logički izraz
+        bool hammer = new_x != 0 && new_y != 0 && new_x != board.get_width() - 1 && new_y != board.get_height() - 1 && activate_powerup(1, new_x, new_y);
+        if((hammer || board[new_y][new_x] != '#') && board[new_y][new_x] != 'U'){
             decay_powerups();
             if(board[new_y][new_x] == 'P') acquire_powerup();
             board[player_y][player_x] = ' ';
@@ -51,6 +55,7 @@ void GameState::player_move(){
             if(activate_powerup(3, player_x, player_y)){
                 enemy_x = 0;
                 enemy_y = 0;
+                board[player_y][player_x] = 'R';
             }
         }else{
             std::cout << "Ne mozete odigrati ovaj potez\n";
@@ -101,6 +106,8 @@ void GameState::enemy_move(){
             board[enemy_y][enemy_x] = 'M';
             break;
         }else{
+            // Blokiranje napada od strane štita - Minotaur ostaje u istoj poziciji
+            if(shield && board[new_y][new_x] == 'R') break;
             new_x = enemy_x;
             new_y = enemy_y;
         }

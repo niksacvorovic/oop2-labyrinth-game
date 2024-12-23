@@ -2,6 +2,16 @@
 #include <string>
 #include "GameState.hpp"
 
+/*  Projekat iz predmeta Objektno orijentisano programiranje 2 - lavirint igra 
+    Struktura projekta
+    - main.cpp - glavna funkcija programa
+    - GameState.hpp, GameState.cpp - implementacija stanja igre
+    - GameBoard.hpp, GameState.cpp - implementacija table za igru
+    - PowerUps.hpp, PowerUp.cpp - implementacija specijalnih efekata
+    Za istoriju verzija konsultovati se sa GitHub repozitorijumom na sledećem linku
+    https://github.com/niksacvorovic/oop2-labyrinth-game
+*/
+
 int main(int argc, char* argv[]){
     // Obrada argumenata komandne linije
     int dim_1, dim_2, item_count;
