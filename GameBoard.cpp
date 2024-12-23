@@ -14,7 +14,7 @@ GameBoard::~GameBoard(){
 }
 
 // Generisanje ulaza, izlaza i spoljašnjih zidova
-void GameBoard::generate_outer_walls(int player_x, int player_y, int enemy_x, int enemy_y){
+void GameBoard::generate_outer_walls(int player_x, int final_x){
     int seed = std::time(0);
     std::srand(seed);
     for(int i = 0; i < width; ++i){
@@ -23,7 +23,7 @@ void GameBoard::generate_outer_walls(int player_x, int player_y, int enemy_x, in
         }else{
             matrix[0][i] = '#';
         }
-        if (i == enemy_x){
+        if (i == final_x){
             matrix[height - 1][i] = 'I';
         }else{
             matrix[height - 1][i] = '#';
@@ -38,12 +38,11 @@ void GameBoard::generate_outer_walls(int player_x, int player_y, int enemy_x, in
             }
         }
     }
-    matrix[player_y][player_x] = 'R';
-    matrix[enemy_y][enemy_x] = 'M';
+    matrix[1][player_x] = 'R';
 }
 
 // Generisanje unutrašnjih zidova - vrši se nasumično
-void GameBoard::generate_inner_walls(){
+void GameBoard::generate_inner_walls(int& enemy_x, int& enemy_y){
     int wall_count(0);
     // Heuristika za broj zidova
     int max_wall_count = 0.3 * width * height;
@@ -54,13 +53,18 @@ void GameBoard::generate_inner_walls(){
         if(matrix[rand_y][rand_x] == ' ') matrix[rand_y][rand_x] = '#';
         ++wall_count;
     }
+    do{
+        enemy_x = std::rand() % (width - 2) + 1;
+        enemy_y = std::rand() % (height - 2) + 1;
+    }while(matrix[enemy_x][enemy_y] != ' ');
+    matrix[enemy_y][enemy_x] = 'M';
 }
 
 // Funkcija koja proverava da li je lavirint rešiv - po principu pretrage po dubini
-bool GameBoard::check_board(int player_x, int player_y, int enemy_x, int enemy_y){
+bool GameBoard::check_board(int player_x, int player_y, int final_x, int final_y){
     std::set<std::pair<int, int>> visited;
     std::pair<int, int> starting(player_y, player_x);
-    std::pair<int, int> final(enemy_y, enemy_x);
+    std::pair<int, int> final(final_y, final_x);
     return path_check(&visited, starting, final);
 }
 
@@ -72,9 +76,9 @@ bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int
     } else {
         visited->insert(current);
     }
-    if(current == final){
+    if(current == final && matrix[final.first][final.second] != '#'){
         return true;
-    } else if (matrix[current.first][current.second] == '#' || matrix[current.first][current.second] == 'U'){
+    } else if (matrix[current.first][current.second] == '#' || matrix[current.first][current.second] == 'U' || matrix[current.first][current.second] == 'M'){
         return false;
     } else {
         std::pair<int, int> left(current.first, current.second - 1);
@@ -101,12 +105,12 @@ void GameBoard::set_items(){
 }
 
 // Obuhvata sve funkcije za generisanje table u jedan poziv
-void GameBoard::generate(int player_x, int player_y, int enemy_x, int enemy_y){
+void GameBoard::generate(int player_x, int player_y, int final_x, int final_y, int& enemy_x, int& enemy_y){
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     do{
-        generate_outer_walls(player_x, player_y, enemy_x, enemy_y);
-        generate_inner_walls();
-    }while(!check_board(player_x, player_y, enemy_x, enemy_y));
+        generate_outer_walls(player_x, final_x);
+        generate_inner_walls(enemy_x, enemy_y);
+    }while(!check_board(player_x, player_y, final_x, final_y));
     set_items();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "Vreme za generisanje table (u mikrosekundama) " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';

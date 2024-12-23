@@ -12,12 +12,12 @@ class GameBoard{
         for(int i = 0; i < height; ++i) matrix[i] = new char[width];
     }
     ~GameBoard();
-    void generate_outer_walls(int player_x, int player_y, int enemy_x, int enemy_y);
-    void generate_inner_walls();
-    bool check_board(int player_x, int player_y, int enemy_x, int enemy_y);
+    void generate_outer_walls(int player_x, int final_x);
+    void generate_inner_walls(int& enemy_x, int& enemy_y);
+    bool check_board(int player_x, int player_y, int final_x, int final_y);
     void set_items();
     bool path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int>& current, std::pair<int, int>& final);
-    void generate(int player_x, int player_y, int enemy_x, int enemy_y);
+    void generate(int player_x, int player_y, int final_x, int final_y, int& enemy_x, int& enemy_y);
     int get_width();
     int get_height();
     char* operator[](int index);

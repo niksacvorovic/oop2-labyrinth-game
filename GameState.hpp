@@ -9,12 +9,13 @@ class GameState{
     std::unique_ptr<PowerUp> powerups[4];
     int player_x, player_y;
     int enemy_x, enemy_y;
+    int final_x, final_y;
     public:
     inline GameState(int x, int y, int count) : board(GameBoard(x, y, count))
     , player_x((std::rand() % (x - 2)) + 1), player_y(1)
-    , enemy_x((std::rand() % (x - 2)) + 1), enemy_y(y - 2)
+    , final_x((std::rand() % (x - 2)) + 1), final_y(y - 2)
     , powerups{nullptr, nullptr, nullptr, nullptr}{
-        board.generate(player_x, player_y, enemy_x, enemy_y);
+        board.generate(player_x, player_y, final_x, final_y, enemy_x, enemy_y);
     };
     ~GameState() {};
     void acquire_powerup();
