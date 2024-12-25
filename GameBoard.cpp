@@ -69,7 +69,9 @@ bool GameBoard::check_board(int player_x, int player_y, int final_x, int final_y
 }
 
 // Pomoćna funkcija za check_board koja se rekurzivno poziva
-bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int, int>& current, std::pair<int, int>& final){
+bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, 
+                            std::pair<int, int>& current, 
+                            std::pair<int, int>& final){
     // Ukoliko find funkcija ne nađe element - vraća end iterator
     if(visited->find(current) != visited->end()){
         return false;
@@ -78,14 +80,19 @@ bool GameBoard::path_check(std::set<std::pair<int, int>>* visited, std::pair<int
     }
     if(current == final && matrix[final.first][final.second] != '#'){
         return true;
-    } else if (matrix[current.first][current.second] == '#' || matrix[current.first][current.second] == 'U' || matrix[current.first][current.second] == 'M'){
+    } else if (matrix[current.first][current.second] == '#' 
+            || matrix[current.first][current.second] == 'U' 
+            || matrix[current.first][current.second] == 'M'){
         return false;
     } else {
         std::pair<int, int> left(current.first, current.second - 1);
         std::pair<int, int> down(current.first + 1, current.second);
         std::pair<int, int> right(current.first, current.second + 1);
         std::pair<int, int> up(current.first - 1, current.second);
-        return path_check(visited, left, final) || path_check(visited, down, final) || path_check(visited, right, final) || path_check(visited, up, final);
+        return path_check(visited, left, final) 
+            || path_check(visited, down, final) 
+            || path_check(visited, right, final) 
+            || path_check(visited, up, final);
     }
 }
 
@@ -113,7 +120,8 @@ void GameBoard::generate(int player_x, int player_y, int final_x, int final_y, i
     }while(!check_board(player_x, player_y, final_x, final_y));
     set_items();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout << "Vreme za generisanje table (u mikrosekundama) " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
+    std::cout << "Vreme za generisanje table (u mikrosekundama) " 
+    << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
 }
 
 int GameBoard::get_width(){

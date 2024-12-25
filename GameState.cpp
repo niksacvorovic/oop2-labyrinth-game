@@ -40,7 +40,11 @@ void GameState::player_move(){
             break;
         }
         // Aktivacija čekića - test da li je zid spoljašnji se sprovodi pre aktivacije kroz logički izraz
-        bool hammer = new_x != 0 && new_y != 0 && new_x != board.get_width() - 1 && new_y != board.get_height() - 1 && activate_powerup(1, new_x, new_y);
+        bool hammer = new_x != 0 
+                    && new_y != 0 
+                    && new_x != board.get_width() - 1 
+                    && new_y != board.get_height() - 1 
+                    && activate_powerup(1, new_x, new_y);
         if((hammer || board[new_y][new_x] != '#') && board[new_y][new_x] != 'U'){
             decay_powerups();
             if(board[new_y][new_x] == 'P') acquire_powerup();

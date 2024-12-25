@@ -22,7 +22,7 @@ bool Hammer::activate(GameBoard& gb, int x, int y){
     } else {
         std::cout << "Cekic mozete koristiti " << duration - 1 << " poteza\n";
     }
-    return gb[y][x] == '#' && x != 0 && y != 0 && x != gb.get_width() - 1 && y != gb.get_height() - 1;
+    return gb[y][x] == '#';
 }
 
 bool Shield::activate(GameBoard& gb, int x, int y){
