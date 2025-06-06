@@ -62,6 +62,15 @@ void GameBoard::generate_inner_walls(int& enemy_x, int& enemy_y){
 
 // Funkcija koja proverava da li je lavirint rešiv - po principu pretrage po dubini
 bool GameBoard::check_board(int player_x, int player_y, int final_x, int final_y){
+    // Odmah eleminišemo slučajeve gde bi igrač bio dokrajčen posle jednog poteza
+    if((matrix[player_y+1][player_x+1] == 'M' && matrix[player_y][player_x-1] == '#')
+    || (matrix[player_y+1][player_x-1] == 'M' && matrix[player_y][player_x+1] == '#')) 
+    return false;
+    if(matrix[player_y+2][player_x] == 'M' 
+    && matrix[player_y][player_x-1] == '#'  
+    && matrix[player_y][player_x+1] == '#') 
+    return false;
+    // Pozivamo pomoćnu funkciju za proveru prohodnosti
     std::set<std::pair<int, int>> visited;
     std::pair<int, int> starting(player_y, player_x);
     std::pair<int, int> final(final_y, final_x);
@@ -122,6 +131,17 @@ void GameBoard::generate(int player_x, int player_y, int final_x, int final_y, i
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "Vreme za generisanje table (u mikrosekundama) " 
     << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
+}
+
+// Postavljanje željenog stanja table - koristi se samo u testovima
+void GameBoard::set_board_state(char** new_matrix, int width, int height) {
+    for(int i = 0;  i < this->height; ++i) {
+        delete[] this->matrix[i];
+    }
+    delete[] this->matrix;
+    this->matrix = new_matrix;
+    this->width = width;
+    this->height = height;
 }
 
 int GameBoard::get_width(){

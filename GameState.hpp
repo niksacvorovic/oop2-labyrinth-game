@@ -18,7 +18,7 @@ class GameState{
         board.generate(player_x, player_y, final_x, final_y, enemy_x, enemy_y);
     };
     ~GameState() {};
-    void acquire_powerup();
+    int acquire_powerup();
     bool activate_powerup(int index, int x, int y);
     void decay_powerups();
     void print_board();
@@ -26,4 +26,7 @@ class GameState{
     void player_move();
     void enemy_move();
     bool game_end();
+    GameBoard& get_board();
+    void set_scenario(int player_x, int player_y, int enemy_x, int enemy_y, int final_x, int final_y, 
+                    int board_width, int board_height, char** board);
 };

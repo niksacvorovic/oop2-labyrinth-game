@@ -20,6 +20,7 @@ class GameBoard{
     void generate(int player_x, int player_y, int final_x, int final_y, int& enemy_x, int& enemy_y);
     int get_width();
     int get_height();
+    void set_board_state(char** new_matrix, int width, int height);
     char* operator[](int index);
     friend std::ostream& operator<<(std::ostream& os, const GameBoard& g);
 };

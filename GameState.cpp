@@ -86,7 +86,7 @@ void GameState::enemy_move(){
     } 
     if(!shield && enemy_y == player_y && abs(enemy_x - player_x) == 1){
         board[enemy_y][enemy_x] = ' ';
-        enemy_y = player_y;
+        enemy_x = player_x;
         board[enemy_y][enemy_x] = 'M';
         return;
     } 
@@ -146,7 +146,7 @@ void GameState::output_board(){
     output << board;
 }
 
-void GameState::acquire_powerup(){
+int GameState::acquire_powerup(){
     int seed = std::rand() % 4;
     std::vector<std::string> names = {"Magla rata", "Cekic", "Stit", "Mac"};
     if(powerups[seed] != nullptr) {
@@ -173,6 +173,7 @@ void GameState::acquire_powerup(){
         break;
         }
     }
+    return seed;
 }
 
 // Funkcija za pozivanje specijalnih efekata tokom igre
@@ -192,4 +193,20 @@ void GameState::decay_powerups(){
             if(powerup->duration == 0) powerup.reset();
         }
     }
+}
+
+GameBoard& GameState::get_board(){
+    return board;
+}
+
+// Postavljanje željenog stanja igre - koristi se samo u testovima
+void GameState::set_scenario(int player_x, int player_y, int enemy_x, int enemy_y, 
+                            int final_x, int final_y, int board_width, int board_height, char** board){
+    this->player_x = player_x;
+    this->player_y = player_y;
+    this->enemy_x = enemy_x;
+    this->enemy_y = enemy_y;
+    this->final_x = final_x;
+    this->final_y = final_y;
+    this->board.set_board_state(board, board_width, board_height);
 }
