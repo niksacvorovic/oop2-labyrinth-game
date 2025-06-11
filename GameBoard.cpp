@@ -56,7 +56,7 @@ void GameBoard::generate_inner_walls(int& enemy_x, int& enemy_y){
     do{
         enemy_x = std::rand() % (width - 2) + 1;
         enemy_y = std::rand() % (height - 2) + 1;
-    }while(matrix[enemy_x][enemy_y] != ' ');
+    }while(matrix[enemy_y][enemy_x] != ' ');
     matrix[enemy_y][enemy_x] = 'M';
 }
 
