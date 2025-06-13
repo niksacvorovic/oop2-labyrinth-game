@@ -8,13 +8,17 @@
 
 // Funkcija za kretanje igrača
 void GameState::player_move(){
-    char step;
+    std::string step;
     bool moves(true);
     int new_x(player_x), new_y(player_y);
     while(moves){
         std::cout << "Unesite korak pomocu tastera W, A, S, D: ";
         std::cin >> step;
-        switch(step){
+        if(step.length() > 1) {
+            std::cout << "Neispravan unos. Pokusajte ponovo\n";
+            continue;
+        }
+        switch(step[0]){
             case 'W':
             case 'w':
             --new_y;
@@ -36,8 +40,8 @@ void GameState::player_move(){
             output_board();
             exit(0);
             default:
-            std::cout << "Neispravan simbol. Pokusajte ponovo\n";
-            break;
+            std::cout << "Neispravan unos. Pokusajte ponovo\n";
+            continue;
         }
         // Aktivacija čekića - test da li je zid spoljašnji se sprovodi pre aktivacije kroz logički izraz
         bool hammer = new_x != 0 
